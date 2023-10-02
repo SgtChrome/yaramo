@@ -3,12 +3,15 @@ from yaramo.edge import Edge
 from yaramo.node import Node
 from yaramo.route import Route
 from yaramo.signal import Signal
-from yaramo.vacancy_section import VacancySection
+from yaramo.vacancy_section import VacancySection, VacancyComponent
+from yaramo.datapoint import Balise, Datapoint, BaliseGroup
+from yaramo.elevation_point import ElevationPoint
+from yaramo.elevation_segment import ElevationSegment
 
 
 class Topology(BaseElement):
     """The Topology is a collection of all track elements comprising that topology.
-    
+
     Elements like Signals, Nodes, Edges, Routes and Vacancy Sections can be accessed by their uuid in their respective dictionary.
     """
 
@@ -19,6 +22,12 @@ class Topology(BaseElement):
         self.signals: dict[str, Signal] = {}
         self.routes: dict[str, Route] = {}
         self.vacancy_sections: dict[str, VacancySection] = {}
+        self.vacancy_components: dict[str, VacancyComponent] = {}
+        self.elevation_points: dict[str, ElevationPoint] = {}
+        self.elevation_segments: dict[str, ElevationSegment] = {}
+        self.datapoints: dict[str, Datapoint] = {}
+        self.balises: dict[str, Balise] = {}
+        self.balise_groups: dict[str, BaliseGroup] = {}
 
     def add_node(self, node: Node):
         self.nodes[node.uuid] = node
@@ -35,9 +44,27 @@ class Topology(BaseElement):
     def add_vacancy_section(self, vacancy_section: VacancySection):
         self.vacancy_sections[vacancy_section.uuid] = vacancy_section
 
+    def add_vacancy_element(self, vacancy_element: VacancyComponent):
+        self.vacancy_components[vacancy_element.uuid] = vacancy_element
+
+    def add_balise(self, balise: Balise):
+        self.balises[balise.uuid] = balise
+
+    def add_balise_group(self, datapoint_id: str, balise_group: BaliseGroup):
+        # balise group ids correspond to the datapoint ids
+        self.balise_groups[datapoint_id] = balise_group
+
+    def add_elevation_point(self, elevation_point: ElevationPoint):
+        self.elevation_points[elevation_point.uuid] = elevation_point
+
+    def add_elevation_segment(self, elevation_segment: ElevationSegment):
+        self.elevation_segments[elevation_segment.uuid] = elevation_segment
+
+    def add_datapoint(self, datapoint: Datapoint):
+        self.datapoints[datapoint.uuid] = datapoint
+
     def get_edge_by_nodes(self, node_a: Node, node_b: Node):
-        for edge_uuid in self.edges:
-            edge = self.edges[edge_uuid]
+        for edge in self.edges.values():
             if (
                 edge.node_a.uuid == node_a.uuid
                 and edge.node_b.uuid == node_b.uuid

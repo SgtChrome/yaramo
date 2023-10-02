@@ -19,7 +19,7 @@ class Node(BaseElement):
     We assume that there are only Nodes connected on all three or only one connection.
     There can be a GeoNode associated with a Node to add a geo-location.
     """
-     
+
     def __init__(self, turnout_side=None, **kwargs):
         """
         Parameters
@@ -64,6 +64,9 @@ class Node(BaseElement):
         self.connected_on_right = node
         self.connected_nodes.append(node)
 
+    def get_connected_nodes(self):
+        return self.connected_nodes
+
     def get_possible_followers(self, source):
         """Returns the Nodes that could follow (head, left, right) when comming from a source Node connected to this Node."""
         if source is None:
@@ -82,7 +85,7 @@ class Node(BaseElement):
 
     def get_anschluss_of_other(self, other: "Node") -> NodeConnectionDirection:
         """  Gets the Anschluss (Ende, Links, Rechts, Spitze) of other node.
-         
+
         Idea: We assume, the current node is a point and we want to estimate the Anschluss of the other node.
         """
 
@@ -157,7 +160,7 @@ class Node(BaseElement):
         Returns:
             A serializable dictionary and a dictionary with serialized objects (GeoNodes).
         """
-        
+
         attributes = self.__dict__
         references = {
             "connected_on_head": self.connected_on_head.uuid if self.connected_on_head else None,
